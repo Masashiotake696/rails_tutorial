@@ -18,7 +18,7 @@ def secure_token
     File.read(token_file).chomp # 改行コードを取り除く
   else
     # Generate a new token and store it in token_file
-    token = Securerandom.hex(64) # 64*2文字のランダムなhex文字列を生成
+    token = SecureRandom.hex(64) # 64*2文字のランダムなhex文字列を生成
     File.write(token_file, token)
     token
   end
