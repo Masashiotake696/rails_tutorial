@@ -9,4 +9,19 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-SampleApp::Application.config.secret_key_base = '36d4f697028fff61f3dddb84887b6affffb658228556af52c6405f578cb9b9ab5ae9fb22477bb0d655f1b38d46b4d997c9623ddd31a61ee7d3eb3ec71d798f97'
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret') # Railsアプリケーションのルートディレクトリにある.secretファイルを取得
+  if File.exist?(token_file)
+    # Use the existing token
+    File.read(token_file).chomp # 改行コードを取り除く
+  else
+    # Generate a new token and store it in token_file
+    token = Securerandom.hex(64) # 64*2文字のランダムなhex文字列を生成
+    File.write(token_file, token)
+    token
+  end
+end
+
+SampleApp::Application.config.secret_key_base = secure_token
