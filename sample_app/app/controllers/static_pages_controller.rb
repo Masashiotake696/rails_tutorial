@@ -3,7 +3,9 @@ class StaticPagesController < ApplicationController
   def home
   end
 
-  # ビューを指定しない場合は対応するビューが出力される(help.html.erb)
   def help
+  end
+
+  def about
   end
 end
