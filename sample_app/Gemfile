@@ -6,6 +6,10 @@ ruby '2.0.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.5'
 
+# For Bootstrap
+gem 'bootstrap-sass', '2.3.2.0' # LESSをSassへ変換し、必要なBootstrapファイルを現在のアプリケーション全てで利用できるようにする
+gem 'sprockets', '2.12.5' # アセットパイプラインの一部の機能
+
 # development環境とtest環境でのみ使用するように指定
 group :development, :test do
   # Use sqlite3 as the database for Active Record

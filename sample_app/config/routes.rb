@@ -1,8 +1,4 @@
 SampleApp::Application.routes.draw do
-  get "static_pages/home"
-  get "static_pages/help"
-  get "static_pages/about"
-  get "static_pages/contact"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -57,4 +53,21 @@ SampleApp::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+
+
+  # root用の記述方式で、自動的にコントローラーとビューで使用する名前付きルートを生成する
+  # 生成される名前月ルートは以下
+  # root_path => '/'
+  # root_url => 'http://localhost:3000/'
+  root 'static_pages#home'
+
+  # match '/xxx' は自動的にコントローラーとビューで使用する名前付きルートを生成する
+  # 生成される名前付きルートは以下
+  # xxx_path => '/xxx'
+  # xxx_url => 'http://localhost:3000/xxx'
+  match '/signup', to: 'users#new', via: 'get'
+  match '/help', to: 'static_pages#help', via: 'get'
+  match '/about', to: 'static_pages#about', via: 'get'
+  match '/contact', to: 'static_pages#contact', via: 'get'
 end

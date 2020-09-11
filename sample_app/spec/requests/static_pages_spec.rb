@@ -2,65 +2,75 @@ require 'spec_helper'
 
 describe "Static pages" do # テスト対象のコントローラー
 
-  let(:base_title) { "Ruby on Rails Tutorial Sample App"}
+  # page変数がテストの主題(subject)であることをRSpecに伝える
+  # shouldの呼び出しを自動的にCapybaraにより提供されるpage変数を使用するように指定
+  subject { page }
+
+  # Shared Examplesを使用して処理をまとめる
+  # 使用している変数であるheadingとpage_titleは呼び出し側でletで定義する
+  shared_examples_for "all static pages" do
+    it { should have_content(heading) } # pageのコンテンツとして変数headingという文字列が含まれているかテスト
+    it { should have_title(full_title(page_title)) } # Titleタグの内容をテスト
+  end
 
   describe "Home page" do # テスト対象のアクション
-    it "should have the content 'Sample App'" do # テスト内容
-      # visitはCapybaraのメソッドで指定したパスにGETリクエストを送る。
-      # リクエスト結果がpage変数に格納される
-      visit '/static_pages/home'
-      # pageのコンテンツとして'Sample App'という文字列が含まれているかテスト
-      expect(page).to have_content('Sample App')
-    end
+    # beforeで共通処理をまとめる
+    # visitはCapybaraのメソッドで、指定したパスにGETリクエストを送る。
+    # リクエスト結果がpage変数に格納される
+    before { visit root_path }
 
-    it "should have the base title" do
-      visit '/static_pages/home'
-      # Titleタグの内容をテスト
-      expect(page).to have_title(base_title)
-    end
+    # ローカル変数定義(Shared Examples用)
+    let(:heading) { "Sample App" }
+    let(:page_title) { "" }
 
-    it "should not have a custom page title" do
-      visit '/static_pages/home'
-      # not_toを使用
-      expect(page).not_to have_title("| Home")
+    # shared_examples_forの呼び出し
+    it_should_behave_like "all static pages"
+    # should_notを使用
+    it { should_not have_title("| Home") }
+
+    # リンクのテスト
+    it "should have the right links on the layout" do
+      # click_linkはinner HTMLを指定
+      click_link "About"
+      expect(page).to have_title(full_title("About Us"))
+      click_link "Help"
+      expect(page).to have_title(full_title("Help"))
+      click_link "Contact"
+      expect(page).to have_title(full_title("Contact"))
+      click_link "Home"
+      expect(page).to have_title(full_title(""))
+      click_link "Sign up now!"
+      expect(page).to have_title(full_title("Sign up"))
+      click_link "sample app"
+      expect(page).to have_title(full_title(""))
     end
   end
 
   describe "Help page" do
-    it "should have the content 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_content('Help')
-    end
+    before { visit help_path }
 
-    it "should have the right title" do
-      visit '/static_pages/help'
-      expect(page).to have_title("#{base_title} | Help")
-    end
+    let(:heading) { "Help" }
+    let(:page_title) { "Help" }
+
+    it_should_behave_like "all static pages"
   end
 
   describe "About page" do
-    it "should have the content 'About Us'" do
-      visit '/static_pages/about'
-      expect(page).to have_content('About Us')
-    end
+    before { visit about_path }
 
-    it "should have the right title" do
-      visit '/static_pages/about'
-      expect(page).to have_title("#{base_title} | About Us")
-    end
+    let(:heading) { "About" }
+    let(:page_title) { "About Us" }
+
+    it_should_behave_like "all static pages"
   end
 
-
   describe "Contact page" do
-    it "should have the content 'Contact" do
-      visit '/static_pages/contact'
-      expect(page).to have_content("Contact")
-    end
+    before { visit contact_path }
 
-    it "should have the right title" do
-      visit '/static_pages/contact'
-      expect(page).to have_title("#{base_title} | Contact")
-    end
+    let(:heading) { "Contact" }
+    let(:page_title) { "Contact" }
+
+    it_should_behave_like "all static pages"
   end
 
 end
