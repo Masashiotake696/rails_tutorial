@@ -29,6 +29,8 @@ group :test do
   gem 'selenium-webdriver', '2.35.1'
   # UI test framework (depends on selenium)
   gem 'capybara', '2.1.0'
+  # For creating factory
+  gem 'factory_girl_rails', '4.2.1'
 end
 
 # Use SCSS for stylesheets
