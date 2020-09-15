@@ -41,12 +41,7 @@ describe "User Pages" do
     end
 
     describe "with valid information" do
-      before do
-        fill_in "Name",	with: "Example User"
-        fill_in "Email",	with: "user@example.com"
-        fill_in "Password",	with: "foobar"
-        fill_in "Confirmation",	with: "foobar"
-      end
+      before { valid_create_user }
 
       it 'should create a user' do
         # by(1)で一件件数増えたことを検証
@@ -58,8 +53,9 @@ describe "User Pages" do
 
         let(:user) { User.find_by(email: "user@example.com") }
 
+        it { should have_link('Sign out') }
         it { should have_title(user.name) }
-        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+        it { should have_success_message('Welcome') }
       end
 
     end

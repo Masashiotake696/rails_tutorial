@@ -67,6 +67,7 @@ SampleApp::Application.routes.draw do
   # DELETE         /users/1       destroy    user_path(user)        ユーザー(id=1)を削除するアクション
   # ---------------------------------------------------------------------------------------------------------------
   resources :users
+  resources :sessions, only: [:new, :create, :destroy]
 
   # root用の記述方式で、自動的にコントローラーとビューで使用する名前付きルートを生成する
   # 生成される名前月ルートは以下
@@ -79,6 +80,8 @@ SampleApp::Application.routes.draw do
   # xxx_path => '/xxx'
   # xxx_url => 'http://localhost:3000/xxx'
   match '/signup', to: 'users#new', via: 'get'
+  match '/signin', to: 'sessions#new', via: 'get'
+  match '/signout', to: 'sessions#destroy', via: 'delete'
   match '/help', to: 'static_pages#help', via: 'get'
   match '/about', to: 'static_pages#about', via: 'get'
   match '/contact', to: 'static_pages#contact', via: 'get'

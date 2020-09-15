@@ -13,6 +13,7 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  it { should respond_to(:remember_token) }
 
   # Userオブジェクトが各メソッドを持っているかテスト
   it { should respond_to(:authenticate) }
@@ -126,6 +127,12 @@ describe User do
       it { should_not eq user_for_invalid_password}
       specify { expect(user_for_invalid_password).to be_false } # specifyはitのエイリアスで自然な英文を作るために使用する
     end
+  end
+
+  describe "remember token" do
+    before { @user.save }
+    # itsメソッドはitが指すテストのsubjectそのものではなく、引数として与えられたその属性に対してテスト行う
+    its(:remember_token) { should_not be_blank }
   end
 
 end
