@@ -1,0 +1,22 @@
+<% provide(:title, 'All users') %>
+
+<h1>All users</h1>
+
+<%#
+  will_paginateメソッドは、usersビューのコードの中から@usersオブジェクトを自動的に見つけ出し、
+  それから他のページにアクセスするためのページネーションリンクを作成する。
+  @usersオブジェクトではpaginateメソッドを使用していることが要求される。
+%>
+<%= will_paginate %>
+
+<ul class="users">
+  <%#
+    ファイル名を指定せずに、@users変数に対してrenderを実行している。
+    これにより、Railsは@usersをUserオブジェクトのリストであると推測し、ユーザーのコレクションを列挙し、
+    それぞれのユーザーを_user.html.erbパーシャルで出力する。
+    ※ each do と end で囲む必要がなくなる。
+  %>
+  <%= render @users %>
+</ul>
+
+<%= will_paginate %>

@@ -30,4 +30,19 @@ module SessionsHelper
     # ||= は @current_userが未定義の場合にのみ、@current_userインスタンス変数に記憶トークンを設定する
     @current_user ||= User.find_by(remember_token: remember_token)
   end
+
+  def current_user?(user)
+    user === current_user
+  end
+
+  def redirect_back_or(default)
+    # セッションに格納したリクエストURLを取得してリダイレクト（リクエストURLがなければデフォルトURLへリダイレクト）
+    redirect_to session[:return_to] || default
+    session.delete(:return_to)
+  end
+
+  def store_location
+    # リクエストURLをセッションに格納
+    session[:return_to] = request.url
+  end
 end

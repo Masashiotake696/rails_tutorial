@@ -1,0 +1,17 @@
+<% provide(:title, "Edit user") %>
+
+<h1>Update your profile</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+    <%# Railsは、for_for @userを使用してフォームを構成すると、HTTPメソッドに対して、@user.new_record?がtrueの時にはPOSTを、falseの時にはPATCHを使用する %>
+    <%= form_for @user do |f| %>
+      <%# フォーム変数fを明示的にローカル変数として渡す必要がある %>
+      <%= render 'fields', f: f %>
+      <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+    <% end %>
+
+    <%= gravatar_for @user %>
+    <a href="http://gravatar.com/emails" target="_blank" rel="noopener noreferrer">change</a>
+  </div>
+</div>

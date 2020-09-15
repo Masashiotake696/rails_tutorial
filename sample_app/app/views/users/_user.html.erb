@@ -1,0 +1,9 @@
+<li>
+  <%= gravatar_for user, size: 52 %>
+  <%= link_to user.name, user %>
+  <%# ログインしているユーザーが管理者かつ、表示しているユーザーが自分ではない場合 %>
+  <% if current_user.admin? && !current_user?(user) %>
+    <%# Data属性でconfirmを使用することで確認ダイアログを表示する %>
+    | <%= link_to 'delete', user, method: :delete, data: { confirm: "You sure?" } %>
+  <% end %>
+</li>

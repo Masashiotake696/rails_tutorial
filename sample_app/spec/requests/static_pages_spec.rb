@@ -72,5 +72,4 @@ describe "Static pages" do # テスト対象のコントローラー
 
     it_should_behave_like "all static pages"
   end
-
 end

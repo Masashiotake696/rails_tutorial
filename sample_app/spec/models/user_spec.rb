@@ -14,12 +14,13 @@ describe User do
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
+  it { should respond_to(:admin) }
 
   # Userオブジェクトが各メソッドを持っているかテスト
   it { should respond_to(:authenticate) }
 
-  # 検証チェック
   it { should be_valid }
+  it { should_not be_admin } # admin?メソッドが使用できる必要がある(admin属性をUserモデルに追加すると自動的にadmin?メソッドが使えるようになる)
 
   # 名前に空文字を格納して存在の検証
   describe "when name is not present" do
@@ -85,7 +86,6 @@ describe User do
     end
   end
 
-
   # パスワードの存在検証
   describe "when password is not present" do
     before do
@@ -129,10 +129,19 @@ describe User do
     end
   end
 
+  # ユーザーを保存するとremember_tokenが自動的に設定されることをテスト
   describe "remember token" do
     before { @user.save }
     # itsメソッドはitが指すテストのsubjectそのものではなく、引数として与えられたその属性に対してテスト行う
     its(:remember_token) { should_not be_blank }
   end
 
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin) # toggle!で指定した属性を反転し保存する
+    end
+
+    it { should be_admin }
+  end
 end
