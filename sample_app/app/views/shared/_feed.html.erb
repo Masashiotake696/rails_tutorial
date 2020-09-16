@@ -1,0 +1,10 @@
+<% if @feed_items.any? %>
+  <ol class="microposts">
+    <%#
+      フィードアイテムとしてcollectionを渡しているので、renderはコレクションの各アイテムを表示するために与えられたパーシャル(この場合はshared/feed_item)を使用する。
+      partialパラメータはcollectionパラメータがある場合は省略できない
+    %>
+    <%= render partial: 'shared/feed_item', collection: @feed_items %>
+  </ol>
+  <%= will_paginate @feed_items %>
+<% end %>

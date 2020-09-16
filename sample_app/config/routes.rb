@@ -68,6 +68,7 @@ SampleApp::Application.routes.draw do
   # ---------------------------------------------------------------------------------------------------------------
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
+  resources :microposts, only: [:create, :destroy]
 
   # root用の記述方式で、自動的にコントローラーとビューで使用する名前付きルートを生成する
   # 生成される名前月ルートは以下

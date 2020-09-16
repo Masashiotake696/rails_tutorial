@@ -4,7 +4,8 @@ describe "User" do
   subject { page }
 
   describe "index" do
-    let(:user) { FactoryGirl.create(:user) }
+    # let!を使用することで、各サンプルが実行される前に評価される（letの場合は最初にメソッドが呼ばれた時に評価される）
+    let!(:user) { FactoryGirl.create(:user) }
 
     describe "page" do
       before do
@@ -39,7 +40,6 @@ describe "User" do
 
     describe "delete links" do
       describe "as an admin user" do
-        FactoryGirl.create(:user) # 一覧表示用のユーザーを作成
         let(:admin) { FactoryGirl.create(:admin) } # adminユーザーの作成
 
         before do
@@ -74,10 +74,20 @@ describe "User" do
     describe "page" do
       # Userファクトリーを使用してユーザーオブジェクトを変数に格納
       let(:user) { FactoryGirl.create(:user) }
+      let!(:micropost1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+      let!(:micropost2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
+
       before { visit user_path(user) }
 
       it { should have_content(user.name) }
       it { should have_title(user.name) }
+
+      # ユーザーに紐づくmicropostsの表示内容をテスト
+      describe "microposts" do
+        it { should have_content(micropost1.content) }
+        it { should have_content(micropost2.content) }
+        it { should have_content(user.microposts.count) }
+      end
     end
   end
 

@@ -51,28 +51,38 @@ describe "Authentication" do
     describe "for signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
 
-      before { sign_in user, no_capybara: true }
-
       describe "submitting a GET request to the Users#new action" do
-        before { get signup_path }
+        before do
+          sign_in user, no_capybara: true
+          get signup_path
+        end
 
         specify { expect(response).to redirect_to(root_url) }
       end
 
       describe "submitting a POST request to the Users#create action" do
-        before { post users_path }
+        before do
+          sign_in user, no_capybara: true
+          post users_path
+        end
 
         specify { expect(response).to redirect_to(root_url) }
       end
 
       describe "submitting a GET request to the Sessions#new action" do
-        before { get signin_path }
+        before do
+          sign_in user, no_capybara: true
+          get signin_path
+        end
 
         specify { expect(response).to redirect_to(root_url) }
       end
 
       describe "submitting a POST request to the Sessions#create action" do
-        before { post sessions_path }
+        before do
+          sign_in user, no_capybara: true
+          post sessions_path
+        end
 
         specify { expect(response).to redirect_to(root_url) }
       end
@@ -128,6 +138,20 @@ describe "Authentication" do
         # responseオブジェクトはサーバーの応答自体のテストに使用できる
         specify { expect(response).to redirect_to(signin_url) }
       end
+
+      describe "in the Microposts controller" do
+        describe "submitting to the create action" do
+          before { post microposts_path }
+
+          specify { expect(response).to redirect_to(signin_url) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+
+          specify { expect(response).to redirect_to(signin_url) }
+        end
+      end
     end
 
     describe "as wrong user" do
@@ -148,6 +172,15 @@ describe "Authentication" do
       describe "submitting a PATCH request to the Users#update action" do
         before { patch user_path(wrong_user) }
 
+        specify { expect(response).to redirect_to(root_url)}
+      end
+
+      describe "submitting a DELETE request to the Microposts#destroy action" do
+        before do
+          delete micropost_path(FactoryGirl.create(:micropost, user: wrong_user))
+        end
+
+        specify { expect(wrong_user.microposts.count).to eq(1) }
         specify { expect(response).to redirect_to(root_url)}
       end
     end

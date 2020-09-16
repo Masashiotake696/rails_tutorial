@@ -19,6 +19,9 @@ describe User do
   # Userオブジェクトが各メソッドを持っているかテスト
   it { should respond_to(:authenticate) }
 
+  # Userオブジェクトが各リレーションを持っているかテスト
+  it { should respond_to(:microposts) }
+
   it { should be_valid }
   it { should_not be_admin } # admin?メソッドが使用できる必要がある(admin属性をUserモデルに追加すると自動的にadmin?メソッドが使えるようになる)
 
@@ -143,5 +146,41 @@ describe User do
     end
 
     it { should be_admin }
+  end
+
+  # micropostリレーション
+  describe "micropost associations" do
+    before { @user.save }
+
+    # Factory Girlを使用することで、Active Recordがアクセスを許可しないようなcreated_at属性も手動で設定できる
+    # letではなくlet!を使用することで、マイクロポストを遅延することなく即座に作成することができる（letを使用した場合は、参照された時に初めて初期化される）
+    let!(:older_micropost) { FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago) }
+    let!(:newer_micropost) { FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago) }
+
+    # 新しいマイクロポストほど順番が先に来ることをテスト
+    it 'should have the right microposts in the right order' do
+      expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+    end
+
+    it 'should destroy associated microposts' do
+      # to_aメソッドが呼び出されることでマイクロポストのコピー(オブジェクト自体のコピー)が作成される
+      # これにより、ユーザーを削除した時にmicroposts変数に含まれているポストは削除されない(microposts変数としてメモリ上に残る)
+      microposts = @user.microposts.to_a
+      @user.destroy
+      expect(microposts).not_to be_empty
+      microposts.each do |micropost|
+        expect(Micropost.where(id: micropost.id)).to be_empty
+      end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) { FactoryGirl.create(:micropost, user: FactoryGirl.create(:user)) }
+
+      # feedに自身のマイクロポストは含むが、フォローしていないユーザーのマイクロポストは含まないことをテスト
+      # includeは与えられた要素が配列に含まれるかどうかをチェックするinclude?メソッドを使用している
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
+    end
   end
 end

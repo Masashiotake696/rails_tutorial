@@ -14,6 +14,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    # マイクロポストをページネーションを使用して取得
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def new
@@ -65,15 +67,6 @@ class UsersController < ApplicationController
       # requireで指定した値が存在しなければ例外を返す（指定した値だけ抽出）
       # permitで許可したパラメータのみを抽出
       params.require(:user).permit(:name, :email, :password, :password_confirmation)
-    end
-
-    def signed_in_user
-      unless signed_in?
-        # サインインページ遷移前のページURLをセッションに退避
-        store_location
-        # redirect_toメソッドにオプションハッシュとしてnoticeを渡すことでフラッシュメッセージを表示する
-        redirect_to signin_url, notice: "Please sign in."
-      end
     end
 
     def correct_user

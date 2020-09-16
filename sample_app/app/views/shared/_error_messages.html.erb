@@ -1,13 +1,13 @@
 <%# any?は要素が一つでもある場合にtrue、空の場合にfalseを返す %>
-<% if @user.errors.any? %>
+<% if object.errors.any? %>
   <div id="error_explanation">
     <div class="alert alert-error">
       <%# pluralizeは第一引数で受け取った数値に基づいて、第二引数で受け取った英単語を複数形に変更して返す %>
       <%# 出力は、"0 errors", "1 error", "2 errors" ... などのようになる %>
-      The form contains <%= pluralize(@user.errors.count, "error") %>
+      The form contains <%= pluralize(object.errors.count, "error") %>
     </div>
     <ul>
-      <% @user.errors.full_messages.each do |message| %>
+      <% object.errors.full_messages.each do |message| %>
         <li>* <%= message %></li>
       <% end %>
     </ul>

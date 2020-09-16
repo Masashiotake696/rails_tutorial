@@ -45,4 +45,13 @@ module SessionsHelper
     # リクエストURLをセッションに格納
     session[:return_to] = request.url
   end
+
+  def signed_in_user
+    unless signed_in?
+      # サインインページ遷移前のページURLをセッションに退避
+      store_location
+      # redirect_toメソッドにオプションハッシュとしてnoticeを渡すことでフラッシュメッセージを表示する
+      redirect_to signin_url, notice: "Please sign in."
+    end
+  end
 end
