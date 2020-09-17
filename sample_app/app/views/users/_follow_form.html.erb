@@ -1,0 +1,10 @@
+<%# 現在参照しているユーザーが自分自身でない場合のみにフォームを表示するように制御 %>
+<% unless current_user?(@user) %>
+  <div id="follow_form">
+    <% if current_user.following?(@user) %>
+      <%= render 'unfollow' %>
+    <% else %>
+      <%= render 'follow' %>
+    <% end %>
+  </div>
+<% end %>

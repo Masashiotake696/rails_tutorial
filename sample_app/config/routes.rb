@@ -66,9 +66,15 @@ SampleApp::Application.routes.draw do
   # PATCH          /users/1       update     user_path(user)        ユーザー(id=1)を変更するアクション
   # DELETE         /users/1       destroy    user_path(user)        ユーザー(id=1)を削除するアクション
   # ---------------------------------------------------------------------------------------------------------------
-  resources :users
+  resources :users do
+    member do
+      # /users/1/following や /users/1/followers のようになる
+      get :following, :followers
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
 
   # root用の記述方式で、自動的にコントローラーとビューで使用する名前付きルートを生成する
   # 生成される名前月ルートは以下

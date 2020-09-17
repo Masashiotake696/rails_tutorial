@@ -104,39 +104,51 @@ describe "Authentication" do
     describe "for non-signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
 
-      describe "visiting the user index" do
-        before { visit users_path }
-        it { should have_title('Sign in') }
-      end
-
-      describe "visiting the edit page" do
-        before { visit edit_user_path(user) }
-        it { should have_title('Sign in') }
-      end
-
-      describe "attempting to visit a protected page" do
-        before do
-          # サインインしていないため、signinページにリダイレクトされる
-          visit edit_user_path(user)
-          fill_in "Email",	with: user.email
-          fill_in "Password",	with: user.password
-          click_button "Sign in"
+      describe "in the Users controller" do
+        describe "visiting the user index" do
+          before { visit users_path }
+          it { should have_title('Sign in') }
         end
 
-        describe "after signing in" do
-          it 'should render the desired protected page' do
-            # ログイン後にログイン前にアクセスしていた編集ページに遷移している
-            expect(page).to have_title('Edit user')
+        describe "visiting the edit page" do
+          before { visit edit_user_path(user) }
+          it { should have_title('Sign in') }
+        end
+
+        describe "attempting to visit a protected page" do
+          before do
+            # サインインしていないため、signinページにリダイレクトされる
+            visit edit_user_path(user)
+            fill_in "Email",	with: user.email
+            fill_in "Password",	with: user.password
+            click_button "Sign in"
+          end
+
+          describe "after signing in" do
+            it 'should render the desired protected page' do
+              # ログイン後にログイン前にアクセスしていた編集ページに遷移している
+              expect(page).to have_title('Edit user')
+            end
           end
         end
-      end
 
-      describe "submitting to the update action" do
-        # patchメソッドを使用して直接HTTPリクエストを発行する（他にもget, post, deleteメソッドがサポートされている）
-        before { patch user_path(user) }
-        # patchメソッドを使用してHTTPリクエストを直接発行すると、低レベルのresponseオブジェクトにアクセスできるようになる
-        # responseオブジェクトはサーバーの応答自体のテストに使用できる
-        specify { expect(response).to redirect_to(signin_url) }
+        describe "submitting to the update action" do
+          # patchメソッドを使用して直接HTTPリクエストを発行する（他にもget, post, deleteメソッドがサポートされている）
+          before { patch user_path(user) }
+          # patchメソッドを使用してHTTPリクエストを直接発行すると、低レベルのresponseオブジェクトにアクセスできるようになる
+          # responseオブジェクトはサーバーの応答自体のテストに使用できる
+          specify { expect(response).to redirect_to(signin_url) }
+        end
+
+        describe "visiting the following page" do
+          before { visit following_user_path(user) }
+          it { should have_title('Sign in') }
+        end
+
+        describe "visiting the followers page" do
+          before { visit followers_user_path(user) }
+          it { should have_title('Sign in') }
+        end
       end
 
       describe "in the Microposts controller" do
@@ -152,6 +164,22 @@ describe "Authentication" do
           specify { expect(response).to redirect_to(signin_url) }
         end
       end
+
+      describe "in the Relationships controller" do
+        describe "submitting to the create action" do
+          before { post relationships_path }
+
+          specify { expect(response).to redirect_to(signin_url) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete relationship_path(1) }
+
+          specify { expect(response).to redirect_to(signin_url) }
+        end
+
+      end
+
     end
 
     describe "as wrong user" do

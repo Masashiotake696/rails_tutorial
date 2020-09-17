@@ -1,0 +1,5 @@
+// follow_formの内容をFollowからUnfollowに変更する
+// escape_javascriptでJavaScriptセグメントのキャリッジリターンとシングルクォート、ダブルクォートをエスケープする
+$("#follow_form").html("<%= escape_javascript(render('users/unfollow')) %>")
+// フォロワー数を再度描画する
+$("#followers").html("<%= @user.followers.count %>")

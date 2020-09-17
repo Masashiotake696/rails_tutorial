@@ -1,0 +1,4 @@
+<%# リレーションシップモデルのIDが送信される %>
+<%= form_for(current_user.relationships.find_by(followed_id: @user.id), method: :delete, remote: true) do |f| %>
+  <%= f.submit "Unfollow", class: "btn btn-large" %>
+<% end %>
